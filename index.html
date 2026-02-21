@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ship My Dissertation — Stop Panicking. Start Shipping.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --accent: #ff6b35;
+    --accent2: #ff3366;
+    --accent3: #7c5cfc;
+    --text: #f0eff4;
+    --text-muted: #8887a0;
+    --text-dim: #5c5b72;
+    --success: #00e676;
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* Grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgba(10, 10, 15, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .nav-cta {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .nav-cta:hover {
+    background: var(--accent2);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 30px rgba(255, 51, 102, 0.3);
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(255, 107, 53, 0.08) 0%, rgba(124, 92, 252, 0.04) 40%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .panic-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 51, 102, 0.1);
+    border: 1px solid rgba(255, 51, 102, 0.2);
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    color: var(--accent2);
+    font-weight: 600;
+    margin-bottom: 40px;
+    animation: fadeDown 0.8s ease;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .panic-badge .pulse {
+    width: 8px;
+    height: 8px;
+    background: var(--accent2);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.5); }
+  }
+
+  h1 {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -3px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s ease;
+  }
+
+  h1 .highlight {
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .tagline {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s ease 0.15s both;
+    font-weight: 300;
+  }
+
+  .tagline strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .hero-cta-group {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    animation: fadeUp 0.8s ease 0.3s both;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .cta-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    border: none;
+    padding: 18px 40px;
+    border-radius: 100px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(255, 107, 53, 0.35);
+  }
+
+  .cta-secondary {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 400;
+    text-decoration: none;
+    transition: color 0.3s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: 'Sora', sans-serif;
+  }
+
+  .cta-secondary:hover { color: var(--text); }
+
+  .price-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 20px;
+    animation: fadeUp 0.8s ease 0.45s both;
+  }
+
+  .price-tag span {
+    color: var(--success);
+    font-weight: 700;
+  }
+
+  /* Social proof ticker */
+  .social-proof {
+    margin-top: 60px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: fadeUp 0.8s ease 0.5s both;
+  }
+
+  .avatar-stack {
+    display: flex;
+  }
+
+  .avatar-stack .av {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    margin-left: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .avatar-stack .av:first-child { margin-left: 0; }
+  .av-1 { background: linear-gradient(135deg, #ff6b35, #ff3366); }
+  .av-2 { background: linear-gradient(135deg, #7c5cfc, #3366ff); }
+  .av-3 { background: linear-gradient(135deg, #00e676, #00b0ff); }
+  .av-4 { background: linear-gradient(135deg, #ffab00, #ff6b35); }
+
+  .social-proof-text {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+
+  .social-proof-text strong {
+    color: var(--text-muted);
+  }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: bob 2s ease infinite;
+  }
+
+  @keyframes bob {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* Problem section */
+  .problem-section {
+    padding: 120px 24px;
+    text-align: center;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .problem-section h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    max-width: 700px;
+    margin: 0 auto 60px;
+    letter-spacing: -1px;
+    line-height: 1.2;
+  }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .problem-card {
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius);
+    padding: 36px 28px;
+    text-align: left;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .problem-card:hover {
+    border-color: rgba(255, 107, 53, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+
+  .problem-card .emoji {
+    font-size: 2rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .problem-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .problem-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* How it works */
+  .how-section {
+    padding: 120px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .how-section h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 12px;
+    letter-spacing: -1px;
+  }
+
+  .how-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 72px;
+    font-size: 1.05rem;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+    align-items: start;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .step:nth-child(2) { animation-delay: 0.1s; }
+  .step:nth-child(3) { animation-delay: 0.2s; }
+  .step:nth-child(4) { animation-delay: 0.3s; }
+
+  .step-num {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .step:nth-child(1) .step-num { background: rgba(255, 107, 53, 0.12); color: var(--accent); }
+  .step:nth-child(2) .step-num { background: rgba(255, 51, 102, 0.12); color: var(--accent2); }
+  .step:nth-child(3) .step-num { background: rgba(124, 92, 252, 0.12); color: var(--accent3); }
+  .step:nth-child(4) .step-num { background: rgba(0, 230, 118, 0.12); color: var(--success); }
+
+  .step h3 {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  .step p {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  /* The "not cheating" section */
+  .integrity-section {
+    padding: 100px 24px;
+    text-align: center;
+    background: var(--surface);
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .integrity-section h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+
+  .integrity-section h2 .strike {
+    text-decoration: line-through;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .integrity-section p {
+    color: var(--text-muted);
+    max-width: 580px;
+    margin: 0 auto 40px;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .integrity-badges {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .i-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 230, 118, 0.06);
+    border: 1px solid rgba(0, 230, 118, 0.15);
+    padding: 12px 20px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    color: var(--success);
+    font-weight: 500;
+  }
+
+  /* Pricing */
+  .pricing-section {
+    padding: 120px 24px;
+    text-align: center;
+  }
+
+  .pricing-section h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -1px;
+  }
+
+  .pricing-section > p {
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    font-size: 1rem;
+  }
+
+  .pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .price-card {
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius);
+    padding: 40px 32px;
+    text-align: left;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .price-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 60px rgba(255, 107, 53, 0.1);
+  }
+
+  .price-card.featured::before {
+    content: 'BEST VALUE';
+    position: absolute;
+    top: -12px;
+    right: 24px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 100px;
+    letter-spacing: 1.5px;
+  }
+
+  .price-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-muted);
+  }
+
+  .price-amount {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 4px;
+  }
+
+  .price-period {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .price-features {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+
+  .price-features li {
+    padding: 8px 0;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .price-features li::before {
+    content: '✓';
+    color: var(--success);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+
+  .price-card button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 100px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+
+  .price-card .btn-outline {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text);
+  }
+
+  .price-card .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .price-card.featured button {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+  }
+
+  .price-card.featured button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(255, 107, 53, 0.3);
+  }
+
+  /* FAQ teaser */
+  .faq-section {
+    padding: 80px 24px 120px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 24px 0;
+  }
+
+  .faq-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+
+  .faq-item p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* Footer CTA */
+  .final-cta {
+    padding: 100px 24px;
+    text-align: center;
+    background: var(--surface);
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    bottom: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255, 107, 53, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+
+  .final-cta p {
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    font-size: 1rem;
+  }
+
+  footer {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+  }
+
+  footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile */
+  @media (max-width: 640px) {
+    nav { padding: 16px 20px; }
+    .hero { padding: 100px 20px 60px; }
+    h1 { letter-spacing: -1.5px; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .pricing-cards { grid-template-columns: 1fr; max-width: 360px; }
+    .step { grid-template-columns: 48px 1fr; gap: 16px; }
+    .integrity-badges { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🚀</div>
+    shipmydiss
+  </div>
+  <button class="nav-cta">Get Started Free</button>
+</nav>
+
+<section class="hero">
+  <div class="panic-badge">
+    <span class="pulse"></span>
+    Dissertation deadline approaching
+  </div>
+  <h1>Ship your<br><span class="highlight">dissertation.</span></h1>
+  <p class="tagline">Your supervisor tells you <strong>what to write.</strong><br>Nobody tells you how to actually get it done.<br><strong>This does.</strong></p>
+  <div class="hero-cta-group">
+    <button class="cta-primary">Start planning for free →</button>
+    <button class="cta-secondary">See how it works</button>
+  </div>
+  <p class="price-tag">Free to start · Pro from <span>£4.99/mo</span> · Cancel anytime</p>
+
+  <div class="social-proof">
+    <div class="avatar-stack">
+      <div class="av av-1">J</div>
+      <div class="av av-2">S</div>
+      <div class="av av-3">A</div>
+      <div class="av av-4">K</div>
+    </div>
+    <span class="social-proof-text"><strong>2,400+ students</strong> shipping their dissertations</span>
+  </div>
+
+  <div class="scroll-hint">
+    scroll
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M4 9l4 4 4-4"/></svg>
+  </div>
+</section>
+
+<section class="problem-section">
+  <span class="section-label">The real problem</span>
+  <h2>Your dissertation isn't hard because you're stupid. It's hard because nobody taught you to manage it.</h2>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <span class="emoji">😵‍💫</span>
+      <h3>"I don't know where to start"</h3>
+      <p>You've got a 10,000-word mountain and a blank Google Doc. Your supervisor said "just get started" which is the academic equivalent of "just be happy."</p>
+    </div>
+    <div class="problem-card">
+      <span class="emoji">📅</span>
+      <h3>"I've got ages yet"</h3>
+      <p>Famous last words. The deadline is months away so you keep pushing it. Then suddenly it's 3 weeks out and you haven't finished your lit review. We've seen this film before.</p>
+    </div>
+    <div class="problem-card">
+      <span class="emoji">🔥</span>
+      <h3>"I'll just cram it"</h3>
+      <p>This isn't a 2,000-word essay. You cannot Red Bull your way through a dissertation in a week. Well, you can. But your grade will reflect it.</p>
+    </div>
+  </div>
+</section>
+
+<section class="how-section">
+  <span class="section-label" style="display:block;text-align:center;margin-bottom:24px;">How it works</span>
+  <h2>4 minutes to set up.<br>Months of panic avoided.</h2>
+  <p class="how-subtitle">It's basically a project manager that doesn't judge you.</p>
+
+  <div class="step">
+    <div class="step-num">01</div>
+    <div>
+      <h3>Tell us about your dissertation</h3>
+      <p>Topic, word count, deadline, how many hours a week you can realistically give it (be honest — we won't tell anyone).</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">02</div>
+    <div>
+      <h3>Get a proper plan, not a vague timeline</h3>
+      <p>A week-by-week schedule with real milestones: lit review done by X, methodology locked by Y, first draft by Z. With built-in buffer for when life happens.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">03</div>
+    <div>
+      <h3>Weekly check-ins that keep you honest</h3>
+      <p>Quick nudges that ask what you've done, flag when you're slipping, and adjust your plan dynamically. Like a gym buddy for your brain.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">04</div>
+    <div>
+      <h3>Ship it. Graduate. Move on with your life.</h3>
+      <p>Submit on time, with zero all-nighters and an AI transparency log your university will actually respect.</p>
+    </div>
+  </div>
+</section>
+
+<section class="integrity-section">
+  <span class="section-label">Before you ask</span>
+  <h2>This is <span class="strike">definitely</span> not cheating.</h2>
+  <p>We don't write a single word of your dissertation. We don't generate content. We don't touch your research. We teach you to manage the <em>project</em> — the same skill your future employer will pay you for.</p>
+  <div class="integrity-badges">
+    <div class="i-badge">✍️ Zero content generation</div>
+    <div class="i-badge">📋 AI transparency log included</div>
+    <div class="i-badge">🎓 Supervisor-approved methodology</div>
+  </div>
+</section>
+
+<section class="pricing-section">
+  <span class="section-label">Pricing</span>
+  <h2>Less than your weekly Greggs.</h2>
+  <p>Seriously. That's the trade-off.</p>
+  <div class="pricing-cards">
+    <div class="price-card">
+      <h3>Monthly</h3>
+      <div class="price-amount">£4.99</div>
+      <span class="price-period">per month · cancel anytime</span>
+      <ul class="price-features">
+        <li>Personalised dissertation plan</li>
+        <li>Weekly check-ins & nudges</li>
+        <li>Dynamic schedule adjustment</li>
+        <li>Progress dashboard</li>
+      </ul>
+      <button class="btn-outline">Start free trial</button>
+    </div>
+    <div class="price-card featured">
+      <h3>Full Year</h3>
+      <div class="price-amount">£29.99</div>
+      <span class="price-period">one payment · save 50%</span>
+      <ul class="price-features">
+        <li>Everything in Monthly</li>
+        <li>AI transparency log export</li>
+        <li>Supervisor-ready progress reports</li>
+        <li>Priority support</li>
+        <li>Methodology planning assistant</li>
+      </ul>
+      <button>Get the full year →</button>
+    </div>
+  </div>
+</section>
+
+<section class="faq-section">
+  <span class="section-label" style="display:block;text-align:center;margin-bottom:40px;">Questions</span>
+  <div class="faq-item">
+    <h3>Will my university have a problem with this?</h3>
+    <p>No. We don't generate academic content — we help you plan and manage your time. It's the same thing a good supervisor or study skills workshop would do, just available 24/7 and actually personalised to your project. We include an AI transparency log you can submit.</p>
+  </div>
+  <div class="faq-item">
+    <h3>I'm already behind. Is it too late?</h3>
+    <p>Nope. Tell us where you're at and how long you've got. We'll build a recovery plan that's actually realistic instead of just "write faster."</p>
+  </div>
+  <div class="faq-item">
+    <h3>What if I ignore the check-ins?</h3>
+    <p>We'll notice. And we'll adjust your plan accordingly. We're not your mum — but we will show you exactly what ignoring this week means for your deadline.</p>
+  </div>
+  <div class="faq-item">
+    <h3>Does it work for taught modules too, not just dissertations?</h3>
+    <p>Yes. Any major assignment or project over 3,000 words works. Dissertations are just where the pain is worst.</p>
+  </div>
+</section>
+
+<section class="final-cta">
+  <h2>Your dissertation isn't going<br>to plan itself.</h2>
+  <p>Well, actually — now it can.</p>
+  <button class="cta-primary">Start planning for free →</button>
+</section>
+
+<footer>
+  <p>© 2025 shipmydiss · Built by academics who've seen too many students panic · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+</footer>
+
+</body>
+</html>
