@@ -70,11 +70,8 @@ export default function SignInPage() {
             </div>
           </div>
 
-          <button
-            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-            className="w-full px-4 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-3"
-          >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+          <div className="w-full px-4 py-3 bg-gray-900 border border-gray-800 text-gray-600 font-medium rounded-lg flex items-center justify-center gap-3 cursor-not-allowed select-none">
+            <svg className="w-5 h-5 opacity-40" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
@@ -93,7 +90,8 @@ export default function SignInPage() {
               />
             </svg>
             Continue with Google
-          </button>
+            <span className="ml-auto text-xs bg-gray-800 text-gray-500 px-2 py-0.5 rounded-full">coming soon</span>
+          </div>
         </div>
       </div>
     </div>
