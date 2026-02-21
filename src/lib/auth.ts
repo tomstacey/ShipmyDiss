@@ -20,8 +20,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           user: "resend",
           pass: process.env.RESEND_API_KEY,
         },
+        name: "tomstacey.co.uk", // explicit HELO hostname for Resend SMTP
       },
-      from: process.env.EMAIL_FROM || "Ship My Dissertation <noreply@shipmydiss.com>",
+      from: process.env.EMAIL_FROM || "Ship My Dissertation <noreply@tomstacey.co.uk>",
     }),
   ],
   pages: {
