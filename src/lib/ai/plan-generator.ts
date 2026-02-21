@@ -1,10 +1,21 @@
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { PLAN_GENERATION_SYSTEM_PROMPT } from "./prompts";
 import type { OnboardingData } from "@/app/onboarding/page";
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+// Lazy-initialised so the key is only required at runtime, not build time
+function getClient() {
+  return new OpenAI({
+    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: process.env.OPENROUTER_API_KEY ?? "missing",
+    defaultHeaders: {
+      "HTTP-Referer": process.env.NEXTAUTH_URL || "http://localhost:3000",
+      "X-Title": "Ship My Dissertation",
+    },
+  });
+}
+
+// Default model — claude-sonnet via OpenRouter. Override with OPENROUTER_MODEL env var.
+const MODEL = process.env.OPENROUTER_MODEL || "anthropic/claude-sonnet-4-5";
 
 export type GeneratedMilestone = {
   title: string;
@@ -25,6 +36,7 @@ export type GeneratedPlan = {
 };
 
 export async function generatePlan(data: OnboardingData): Promise<GeneratedPlan> {
+  const client = getClient();
   const today = new Date().toISOString().split("T")[0];
   const deadlineDate = new Date(data.deadline);
   const todayDate = new Date();
@@ -54,21 +66,20 @@ Total available hours (approx): ${weeksUntilDeadline * data.weeklyHours} hours
 
 Generate the plan now. Return ONLY the JSON object.`;
 
-  const response = await client.messages.create({
-    model: "claude-sonnet-4-5",
+  const response = await client.chat.completions.create({
+    model: MODEL,
     max_tokens: 4096,
-    system: PLAN_GENERATION_SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userMessage }],
+    messages: [
+      { role: "system", content: PLAN_GENERATION_SYSTEM_PROMPT },
+      { role: "user", content: userMessage },
+    ],
   });
 
-  const content = response.content[0];
-  if (content.type !== "text") {
-    throw new Error("Unexpected response type from AI");
-  }
+  const raw = response.choices[0]?.message?.content ?? "";
 
   // Strip any markdown code fences if present
-  const raw = content.text.trim().replace(/^```json\n?/, "").replace(/\n?```$/, "");
+  const cleaned = raw.trim().replace(/^```json\n?/, "").replace(/\n?```$/, "");
 
-  const plan = JSON.parse(raw) as GeneratedPlan;
+  const plan = JSON.parse(cleaned) as GeneratedPlan;
   return plan;
 }
