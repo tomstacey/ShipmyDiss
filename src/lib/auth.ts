@@ -23,7 +23,7 @@ const providers = [
       },
       name: "resend.com",
     },
-    from: process.env.EMAIL_FROM || "Ship My Dissertation <onboarding@resend.dev>",
+    from: process.env.EMAIL_FROM || "Ship My Dissertation <noreply@tomstacey.co.uk>",
   }),
 ];
 
