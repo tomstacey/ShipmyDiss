@@ -35,6 +35,13 @@ export async function POST(req: NextRequest) {
         currentPhase: plan.milestones[0]?.phase ?? "lit_review",
         blockedWeeks: data.blockedWeeks.filter(Boolean),
         otherDeadlines: data.otherDeadlines,
+        ...(data.documentAnalysis
+          ? {
+              documentAnalysis: JSON.parse(JSON.stringify(data.documentAnalysis)),
+              documentFileName: data.documentFileName,
+              documentAnalysedAt: new Date(),
+            }
+          : {}),
       },
     });
 

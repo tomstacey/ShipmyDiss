@@ -75,6 +75,9 @@ model Project {
   currentProgress      String?  @default("not_started") // not_started | chosen_topic | started_reading | have_proposal | collecting_data
   blockedWeeks         Json?    // array of date ranges when student can't work
   otherDeadlines       Json?    // array of { date, description }
+  documentAnalysis     Json?    // structured AI analysis of uploaded brief/spec
+  documentFileName     String?  // original file name for UI display
+  documentAnalysedAt   DateTime? // when the document was analysed
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 

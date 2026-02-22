@@ -7,7 +7,9 @@ import { StepBasics } from "@/components/onboarding/step-basics";
 import { StepTime } from "@/components/onboarding/step-time";
 import { StepMethodology } from "@/components/onboarding/step-methodology";
 import { StepProgress } from "@/components/onboarding/step-progress";
+import { StepDocumentUpload } from "@/components/onboarding/step-document-upload";
 import { GeneratingPlan } from "@/components/onboarding/generating-plan";
+import type { DocumentAnalysis } from "@/types";
 
 export type OnboardingData = {
   // Step 1
@@ -16,13 +18,16 @@ export type OnboardingData = {
   title: string;
   wordCount: number;
   deadline: string;
-  // Step 3
+  // Step 3 — document upload (optional)
+  documentAnalysis: DocumentAnalysis | null;
+  documentFileName: string | null;
+  // Step 4
   weeklyHours: number;
   blockedWeeks: string[];
   otherDeadlines: { date: string; description: string }[];
-  // Step 4
-  methodology: string;
   // Step 5
+  methodology: string;
+  // Step 6
   currentProgress: string;
 };
 
@@ -31,6 +36,8 @@ const INITIAL_DATA: OnboardingData = {
   title: "",
   wordCount: 10000,
   deadline: "",
+  documentAnalysis: null,
+  documentFileName: null,
   weeklyHours: 10,
   blockedWeeks: [],
   otherDeadlines: [],
@@ -41,6 +48,7 @@ const INITIAL_DATA: OnboardingData = {
 const STEPS = [
   "Project type",
   "The basics",
+  "Your brief",
   "Your time",
   "Methodology",
   "Where you're at",
@@ -128,12 +136,15 @@ export default function OnboardingPage() {
             <StepBasics data={data} update={update} onNext={next} onBack={back} />
           )}
           {step === 2 && (
-            <StepTime data={data} update={update} onNext={next} onBack={back} />
+            <StepDocumentUpload data={data} update={update} onNext={next} onBack={back} />
           )}
           {step === 3 && (
-            <StepMethodology data={data} update={update} onNext={next} onBack={back} />
+            <StepTime data={data} update={update} onNext={next} onBack={back} />
           )}
           {step === 4 && (
+            <StepMethodology data={data} update={update} onNext={next} onBack={back} />
+          )}
+          {step === 5 && (
             <StepProgress data={data} update={update} onSubmit={submit} onBack={back} />
           )}
         </div>

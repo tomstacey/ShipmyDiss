@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { PLAN_GENERATION_SYSTEM_PROMPT } from "./prompts";
 import type { OnboardingData } from "@/app/onboarding/page";
+import type { DocumentAnalysis } from "@/types";
 
 // Lazy-initialised so the key is only required at runtime, not build time
 function getClient() {
@@ -35,6 +36,63 @@ export type GeneratedPlan = {
   bufferWeeks: number;
 };
 
+function buildDocumentAnalysisSection(analysis: DocumentAnalysis | null | undefined): string {
+  if (!analysis) return "";
+
+  const parts: string[] = ["\n--- DOCUMENT ANALYSIS (from uploaded project brief/marking scheme) ---"];
+
+  if (analysis.rawSummary) {
+    parts.push(`Summary: ${analysis.rawSummary}`);
+  }
+
+  if (analysis.assessmentCriteria.length > 0) {
+    parts.push("\nASSESSMENT CRITERIA:");
+    for (const c of analysis.assessmentCriteria) {
+      const weight = c.weightPercent ? ` (${c.weightPercent}%)` : "";
+      parts.push(`- ${c.name}${weight}: ${c.description}`);
+    }
+  }
+
+  if (analysis.markingWeights.length > 0) {
+    parts.push("\nMARKING WEIGHTS:");
+    for (const w of analysis.markingWeights) {
+      parts.push(`- ${w.component}: ${w.percent}%`);
+    }
+  }
+
+  if (analysis.requiredDeliverables.length > 0) {
+    parts.push(`\nREQUIRED DELIVERABLES: ${analysis.requiredDeliverables.join(", ")}`);
+  }
+
+  if (analysis.methodologyConstraints.length > 0) {
+    parts.push(`\nMETHODOLOGY CONSTRAINTS: ${analysis.methodologyConstraints.join(", ")}`);
+  }
+
+  if (analysis.ethicsRequirements.length > 0) {
+    parts.push(`\nETHICS REQUIREMENTS: ${analysis.ethicsRequirements.join(", ")}`);
+  }
+
+  if (analysis.keyRequirements.length > 0) {
+    parts.push(`\nKEY REQUIREMENTS: ${analysis.keyRequirements.join(", ")}`);
+  }
+
+  if (analysis.supervisorMeetingExpectations) {
+    parts.push(`\nSUPERVISOR MEETINGS: ${analysis.supervisorMeetingExpectations}`);
+  }
+
+  if (analysis.extractedWordCount) {
+    parts.push(`\nWORD COUNT (from document): ${analysis.extractedWordCount}`);
+  }
+
+  if (analysis.extractedDeadline) {
+    parts.push(`\nDEADLINE (from document): ${analysis.extractedDeadline}`);
+  }
+
+  parts.push("--- END DOCUMENT ANALYSIS ---\n");
+
+  return parts.join("\n");
+}
+
 export async function generatePlan(data: OnboardingData): Promise<GeneratedPlan> {
   const client = getClient();
   const today = new Date().toISOString().split("T")[0];
@@ -63,7 +121,7 @@ ${
 }
 
 Total available hours (approx): ${weeksUntilDeadline * data.weeklyHours} hours
-
+${buildDocumentAnalysisSection(data.documentAnalysis)}
 Generate the plan now. Return ONLY the JSON object.`;
 
   const response = await client.chat.completions.create({
