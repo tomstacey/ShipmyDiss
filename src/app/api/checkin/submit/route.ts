@@ -90,8 +90,8 @@ export async function POST(req: NextRequest) {
       moodRating,
       aiResponse: checkinResult.aiResponse,
       planAdjustments: checkinResult.suggestPlanAdjustment
-        ? { suggested: true, reason: checkinResult.adjustmentReason }
-        : null,
+        ? { suggested: true, reason: checkinResult.adjustmentReason ?? null }
+        : undefined,
     },
   });
 
