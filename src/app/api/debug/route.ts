@@ -55,5 +55,18 @@ export async function GET() {
     checks.tokenCRUD = { error: e instanceof Error ? e.message : String(e) };
   }
 
+  // Show what magic link URL would look like based on env
+  const baseUrl = process.env.NEXTAUTH_URL || "NOT SET";
+  const sampleUrl = baseUrl !== "NOT SET"
+    ? `${baseUrl}/api/auth/callback/nodemailer?callbackUrl=${encodeURIComponent(baseUrl + "/dashboard")}&token=SAMPLE_TOKEN&email=user%40example.com`
+    : "NEXTAUTH_URL not set";
+  checks.magicLinkUrlSample = sampleUrl;
+
+  // Show what the request URL looks like from inside Vercel
+  checks.requestInfo = {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    AUTH_URL: process.env.AUTH_URL || "not set",
+  };
+
   return NextResponse.json(checks, { status: 200 });
 }
