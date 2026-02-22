@@ -2,7 +2,19 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Google from "next-auth/providers/google";
 import Nodemailer from "next-auth/providers/nodemailer";
+import nodemailer from "nodemailer";
 import { prisma } from "./db";
+
+const smtpConfig = {
+  host: "smtp.resend.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "resend",
+    pass: process.env.RESEND_API_KEY,
+  },
+  name: "resend.com",
+};
 
 const providers = [
   // Only enable Google if credentials are configured
@@ -13,17 +25,20 @@ const providers = [
       })]
     : []),
   Nodemailer({
-    server: {
-      host: "smtp.resend.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: "resend",
-        pass: process.env.RESEND_API_KEY,
-      },
-      name: "resend.com",
-    },
+    server: smtpConfig,
     from: process.env.EMAIL_FROM || "Ship My Dissertation <noreply@tomstacey.co.uk>",
+    async sendVerificationRequest({ identifier: email, url }) {
+      // Log the exact URL being emailed so we can debug via Vercel logs
+      console.log("[auth][magic-link-url]", url);
+      const transport = nodemailer.createTransport(smtpConfig);
+      await transport.sendMail({
+        to: email,
+        from: process.env.EMAIL_FROM || "Ship My Dissertation <noreply@tomstacey.co.uk>",
+        subject: "Sign in to Ship My Dissertation",
+        text: `Sign in to Ship My Dissertation\n\n${url}\n\nIf you did not request this, you can ignore this email.`,
+        html: `<p>Click the link below to sign in:</p><p><a href="${url}">${url}</a></p><p>If you did not request this, you can ignore this email.</p>`,
+      });
+    },
   }),
 ];
 
