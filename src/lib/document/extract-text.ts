@@ -1,4 +1,9 @@
-import { PDFParse } from "pdf-parse";
+// Import from lib directly — avoids pdf-parse v1's index.js trying to load a
+// test PDF at import time, which fails in serverless/bundler environments.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pdfParse = require("pdf-parse/lib/pdf-parse.js") as (
+  dataBuffer: Buffer
+) => Promise<{ text: string; numpages: number; info: unknown }>;
 import mammoth from "mammoth";
 
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4 MB — Vercel free tier body limit
@@ -23,14 +28,12 @@ const SUPPORTED_TYPES: Record<string, string> = {
 export async function extractText(file: File): Promise<string> {
   // Validate file type
   const fileType = SUPPORTED_TYPES[file.type];
-  if (!fileType) {
-    // Also check extension as a fallback (some browsers send wrong MIME)
-    const ext = file.name.split(".").pop()?.toLowerCase();
-    if (ext !== "pdf" && ext !== "docx") {
-      throw new ExtractError(
-        "Unsupported file type. Please upload a PDF or DOCX file."
-      );
-    }
+  const extFromName = file.name.split(".").pop()?.toLowerCase();
+
+  if (!fileType && extFromName !== "pdf" && extFromName !== "docx") {
+    throw new ExtractError(
+      "Unsupported file type. Please upload a PDF or DOCX file."
+    );
   }
 
   // Validate size
@@ -41,7 +44,8 @@ export async function extractText(file: File): Promise<string> {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const ext = fileType || file.name.split(".").pop()?.toLowerCase();
+  // Prefer MIME type, fall back to extension
+  const ext = fileType === "pdf" || extFromName === "pdf" ? "pdf" : "docx";
 
   let text: string;
 
@@ -62,26 +66,22 @@ export async function extractText(file: File): Promise<string> {
 
   // Truncate to keep AI costs down
   if (text.length > MAX_TEXT_LENGTH) {
-    text = text.slice(0, MAX_TEXT_LENGTH) + "\n\n[Document truncated — first ~50,000 characters analysed]";
+    text =
+      text.slice(0, MAX_TEXT_LENGTH) +
+      "\n\n[Document truncated — first ~50,000 characters analysed]";
   }
 
   return text;
 }
 
 async function extractFromPdf(buffer: Buffer): Promise<string> {
-  let parser: PDFParse | null = null;
   try {
-    parser = new PDFParse({ data: new Uint8Array(buffer) });
-    const result = await parser.getText();
+    const result = await pdfParse(buffer);
     return result.text;
   } catch (err) {
     throw new ExtractError(
       `Failed to read PDF: ${err instanceof Error ? err.message : "unknown error"}`
     );
-  } finally {
-    if (parser) {
-      await parser.destroy().catch(() => {});
-    }
   }
 }
 
