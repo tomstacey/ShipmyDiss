@@ -28,11 +28,13 @@ const providers = [
 ];
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  debug: true,
   adapter: PrismaAdapter(prisma as never),
   providers,
   pages: {
     signIn: "/auth/signin",
     verifyRequest: "/auth/verify",
+    error: "/auth/error",
   },
   callbacks: {
     session({ session, user }) {
@@ -40,6 +42,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = user.id;
       }
       return session;
+    },
+  },
+  logger: {
+    error(error) {
+      console.error("[auth][error]", error);
+    },
+    warn(code) {
+      console.warn("[auth][warn]", code);
+    },
+    debug(message, metadata) {
+      console.log("[auth][debug]", message, metadata);
     },
   },
 });
