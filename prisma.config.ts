@@ -10,7 +10,5 @@ export default defineConfig({
   },
   datasource: {
     url: process.env["DATABASE_URL"],
-    // directUrl used by Prisma Migrate for DDL (session pooler, supports transactions)
-    directUrl: process.env["DIRECT_URL"],
   },
 });
