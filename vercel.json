@@ -1,5 +1,11 @@
 {
   "framework": "nextjs",
   "regions": ["lhr1"],
-  "installCommand": "npm install --legacy-peer-deps"
+  "installCommand": "npm install --legacy-peer-deps",
+  "crons": [
+    {
+      "path": "/api/checkin/cron",
+      "schedule": "0 9 * * 1"
+    }
+  ]
 }
