@@ -4,27 +4,32 @@ import Google from "next-auth/providers/google";
 import Nodemailer from "next-auth/providers/nodemailer";
 import { prisma } from "./db";
 
+const providers = [
+  // Only enable Google if credentials are configured
+  ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+    ? [Google({
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      })]
+    : []),
+  Nodemailer({
+    server: {
+      host: "smtp.resend.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "resend",
+        pass: process.env.RESEND_API_KEY,
+      },
+      name: "resend.com",
+    },
+    from: process.env.EMAIL_FROM || "Ship My Dissertation <onboarding@resend.dev>",
+  }),
+];
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma as never),
-  providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    Nodemailer({
-      server: {
-        host: "smtp.resend.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: "resend",
-          pass: process.env.RESEND_API_KEY,
-        },
-        name: "tomstacey.co.uk", // explicit HELO hostname for Resend SMTP
-      },
-      from: process.env.EMAIL_FROM || "Ship My Dissertation <noreply@tomstacey.co.uk>",
-    }),
-  ],
+  providers,
   pages: {
     signIn: "/auth/signin",
     verifyRequest: "/auth/verify",
