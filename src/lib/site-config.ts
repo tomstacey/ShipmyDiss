@@ -1,0 +1,8 @@
+/**
+ * Site-wide feature flags.
+ *
+ * BETA_MODE — toggle via Vercel env var without a code deploy:
+ *   NEXT_PUBLIC_BETA_MODE=true  → landing page shows "Free during beta" messaging
+ *   NEXT_PUBLIC_BETA_MODE=false → landing page shows paid pricing (£4.99/mo, £29.99/year)
+ */
+export const BETA_MODE = process.env.NEXT_PUBLIC_BETA_MODE === "true";
