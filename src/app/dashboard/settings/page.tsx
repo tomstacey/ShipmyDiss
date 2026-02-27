@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { DocumentUploadCard } from "@/components/dashboard/document-upload-card";
 import type { DocumentAnalysis } from "@/types";
 
@@ -133,6 +134,22 @@ export default function SettingsPage() {
           <p className="text-gray-300 text-sm">{regenMessage}</p>
         </div>
       )}
+
+      {/* AI transparency log */}
+      <section className="mb-8 pt-8 border-t border-gray-800">
+        <h2 className="text-lg font-semibold mb-1">AI transparency log</h2>
+        <p className="text-gray-400 text-sm mb-4">
+          A full record of every AI interaction for this project. Export it to
+          show your supervisor or university that AI was used for planning only —
+          never for writing academic content.
+        </p>
+        <Link
+          href="/dashboard/transparency"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors border border-gray-700"
+        >
+          View &amp; export transparency log →
+        </Link>
+      </section>
     </div>
   );
 }
