@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Form MK20 – Pub Meeting Request</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --chalk: #f0ead6;
+      --chalk-dim: #b8ae96;
+      --board: #1a1e16;
+      --board-mid: #222820;
+      --sunflower: #f0c020;
+      --ukraine-blue: #5b9bd5;
+      --amber: #d4830a;
+      --amber-light: #f0a020;
+      --red-accent: #c0392b;
+      --green-pub: #2d5a1b;
+      --border-chalk: rgba(240, 234, 214, 0.25);
+      --tap-min: 48px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html { font-size: 16px; }
+
+    body {
+      background: #0f1209;
+      background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(240,192,32,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(91,155,213,0.06) 0%, transparent 50%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem 0 3rem;
+      font-family: 'Courier Prime', monospace;
+    }
+
+    /* Chalk dust texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .board {
+      width: 100%;
+      max-width: 480px;
+      background: var(--board);
+      position: relative;
+      box-shadow: 0 0 0 3px #2a3020, 0 0 0 6px #1a1e14, 0 20px 60px rgba(0,0,0,0.8);
+      animation: fadeUp 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Ukrainian flag strip */
+    .ua-strip {
+      height: 5px;
+      background: linear-gradient(90deg, #005bbb 50%, #ffd500 50%);
+    }
+
+    /* Header */
+    .header {
+      background: var(--board-mid);
+      padding: 1.4rem 1.4rem 1.2rem;
+      border-bottom: 1px dashed var(--border-chalk);
+      text-align: center;
+      position: relative;
+    }
+
+    .form-ref {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.65rem;
+      color: var(--chalk-dim);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .pub-title {
+      font-family: 'Caveat', cursive;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--sunflower);
+      line-height: 1.1;
+      text-shadow: 0 0 20px rgba(240,192,32,0.3);
+    }
+
+    .pub-subtitle {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 0.82rem;
+      color: var(--chalk-dim);
+      margin-top: 0.4rem;
+      line-height: 1.4;
+    }
+
+    .emblem-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.7rem;
+      font-size: 1.4rem;
+    }
+
+    /* Notice banner */
+    .notice {
+      background: rgba(240,192,32,0.08);
+      border-left: 3px solid var(--sunflower);
+      padding: 0.75rem 1.2rem;
+      font-size: 0.72rem;
+      color: var(--chalk-dim);
+      line-height: 1.6;
+      margin: 0 1rem;
+      margin-top: 1rem;
+    }
+
+    .notice strong { color: var(--chalk); }
+
+    /* Section */
+    .section {
+      padding: 1.2rem 1.2rem 0.4rem;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .section:nth-child(2) { animation-delay: 0.05s; }
+    .section:nth-child(3) { animation-delay: 0.1s; }
+    .section:nth-child(4) { animation-delay: 0.15s; }
+    .section:nth-child(5) { animation-delay: 0.2s; }
+    .section:nth-child(6) { animation-delay: 0.25s; }
+    .section:nth-child(7) { animation-delay: 0.3s; }
+
+    .section-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--sunflower);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px dashed var(--border-chalk);
+    }
+
+    /* Field */
+    .field { margin-bottom: 1rem; }
+
+    .field label {
+      display: block;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--chalk-dim);
+      margin-bottom: 0.35rem;
+    }
+
+    .field input[type="text"],
+    .field input[type="time"],
+    .field textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-chalk);
+      border-bottom: 2px solid rgba(240,192,32,0.4);
+      color: var(--chalk);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.95rem;
+      padding: 0.55rem 0.6rem;
+      outline: none;
+      border-radius: 0;
+      -webkit-appearance: none;
+      transition: border-color 0.2s;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-bottom-color: var(--sunflower);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 70px;
+      line-height: 1.5;
+    }
+
+    /* Time grid */
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+    }
+
+    .time-chip {
+      position: relative;
+    }
+
+    .time-chip input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .time-chip label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--tap-min);
+      border: 1px solid var(--border-chalk);
+      padding: 0.4rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-family: 'Courier Prime', monospace;
+      color: var(--chalk-dim);
+      text-align: center;
+      line-height: 1.3;
+      transition: all 0.15s;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .time-chip label .t-main { font-size: 0.9rem; color: var(--chalk); display: block; }
+    .time-chip label .t-vibe { font-size: 0.6rem; color: var(--chalk-dim); display: block; margin-top: 1px; }
+
+    .time-chip input:checked + label {
+      background: rgba(240,192,32,0.15);
+      border-color: var(--sunflower);
+      color: var(--sunflower);
+    }
+
+    .time-chip input:checked + label .t-main { color: var(--sunflower); }
+
+    /* Toggle chips (for vibe, beverages) */
+    .chip-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .chip-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+
+    .toggle-chip {
+      position: relative;
+    }
+
+    .toggle-chip input[type="checkbox"],
+    .toggle-chip input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .toggle-chip label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: var(--tap-min);
+      padding: 0.5rem 0.7rem;
+      border: 1px solid var(--border-chalk);
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-family: 'Courier Prime', monospace;
+      color: var(--chalk-dim);
+      line-height: 1.3;
+      transition: all 0.15s;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .toggle-chip label .chip-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .toggle-chip input:checked + label {
+      background: rgba(240,192,32,0.12);
+      border-color: var(--sunflower);
+      color: var(--chalk);
+    }
+
+    .toggle-chip.blue input:checked + label {
+      background: rgba(91,155,213,0.12);
+      border-color: var(--ukraine-blue);
+      color: var(--chalk);
+    }
+
+    /* Discussion topics — full width with tick */
+    .topic-list { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .topic-item {
+      position: relative;
+    }
+
+    .topic-item input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .topic-item label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-height: 46px;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--border-chalk);
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-family: 'Courier Prime', monospace;
+      color: var(--chalk-dim);
+      line-height: 1.35;
+      transition: all 0.15s;
+    }
+
+    .topic-item label .t-icon { font-size: 1.1rem; flex-shrink: 0; width: 22px; text-align: center; }
+
+    .topic-item label .tick-box {
+      width: 18px; height: 18px;
+      border: 1.5px solid var(--border-chalk);
+      flex-shrink: 0;
+      margin-left: auto;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      color: transparent;
+      transition: all 0.15s;
+    }
+
+    .topic-item input:checked + label {
+      background: rgba(240,192,32,0.08);
+      border-color: rgba(240,192,32,0.5);
+      color: var(--chalk);
+    }
+
+    .topic-item input:checked + label .tick-box {
+      background: var(--sunflower);
+      border-color: var(--sunflower);
+      color: var(--board);
+    }
+
+    /* Special topic - the cheeky one */
+    .topic-item.cheeky input:checked + label {
+      background: rgba(91,155,213,0.1);
+      border-color: rgba(91,155,213,0.5);
+    }
+
+    .topic-item.cheeky input:checked + label .tick-box {
+      background: var(--ukraine-blue);
+      border-color: var(--ukraine-blue);
+      color: white;
+    }
+
+    /* Food section */
+    .food-note {
+      font-size: 0.68rem;
+      color: var(--chalk-dim);
+      font-style: italic;
+      margin-bottom: 0.7rem;
+      font-family: 'IM Fell English', serif;
+    }
+
+    /* Declaration */
+    .declaration-box {
+      background: rgba(91,155,213,0.06);
+      border: 1px dashed rgba(91,155,213,0.3);
+      padding: 0.9rem;
+      margin: 0 1.2rem;
+      font-size: 0.72rem;
+      color: var(--chalk-dim);
+      line-height: 1.7;
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+    }
+
+    .declaration-box strong { color: var(--chalk); font-style: normal; }
+
+    /* Signature area */
+    .sig-area {
+      padding: 1.2rem;
+      border-top: 1px dashed var(--border-chalk);
+      margin-top: 0.5rem;
+    }
+
+    .sig-area label {
+      display: block;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--chalk-dim);
+      margin-bottom: 0.35rem;
+    }
+
+    .sig-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid rgba(240,192,32,0.3);
+      color: var(--chalk);
+      font-family: 'Caveat', cursive;
+      font-size: 1.4rem;
+      padding: 0.3rem 0;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .sig-input:focus { border-bottom-color: var(--sunflower); }
+    .sig-sub { font-size: 0.6rem; color: var(--chalk-dim); margin-top: 0.3rem; font-style: italic; }
+
+    /* Submit button */
+    .submit-zone {
+      padding: 0 1.2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      min-height: 54px;
+      background: var(--sunflower);
+      color: var(--board);
+      border: none;
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.15s;
+      -webkit-appearance: none;
+    }
+
+    .btn-submit:active { transform: scale(0.98); background: var(--amber-light); }
+
+    .btn-reset {
+      width: 100%;
+      min-height: 42px;
+      background: transparent;
+      color: var(--chalk-dim);
+      border: 1px solid var(--border-chalk);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      -webkit-appearance: none;
+    }
+
+    /* Submission success overlay */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,12,8,0.95);
+      z-index: 100;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .success-overlay.show { display: flex; }
+
+    .success-emoji { font-size: 4rem; margin-bottom: 1rem; animation: bounce 0.6s ease; }
+
+    @keyframes bounce {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .success-title {
+      font-family: 'Caveat', cursive;
+      font-size: 2.2rem;
+      color: var(--sunflower);
+      margin-bottom: 0.5rem;
+    }
+
+    .success-body {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      color: var(--chalk-dim);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      max-width: 320px;
+    }
+
+    .success-ref {
+      margin-top: 1.2rem;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      color: rgba(240,192,32,0.4);
+      text-transform: uppercase;
+    }
+
+    /* Footer */
+    .form-footer {
+      padding: 0.6rem 1.2rem;
+      background: rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.58rem;
+      color: rgba(240,234,214,0.3);
+      letter-spacing: 0.8px;
+    }
+
+    .divider {
+      height: 1px;
+      margin: 0 1.2rem 0;
+      background: var(--border-chalk);
+    }
+
+    /* Watermark */
+    .watermark {
+      position: absolute;
+      top: 42%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-25deg);
+      font-family: 'Caveat', cursive;
+      font-size: 4rem;
+      color: rgba(240,192,32,0.04);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="board">
+    <div class="ua-strip"></div>
+    <div class="watermark">APPROVED PENDING REVIEW</div>
+
+    <!-- Header -->
+    <div class="header">
+      <div class="form-ref">Form MK20 · Bureau of Social Scheduling · Rev.1 (2025)</div>
+      <div class="pub-title">🍺 Pub Meeting Request 🌻</div>
+      <div class="pub-subtitle">
+        Formal application to occupy the valuable Wednesday evening of one<br>
+        <strong style="color:var(--chalk); font-style:normal;">T. Stacey</strong> — a notoriously busy and sought-after individual
+      </div>
+      <div class="emblem-row">🇺🇦 🍺 🇬🇧</div>
+    </div>
+
+    <!-- Notice -->
+    <div class="notice">
+      <strong>PLEASE READ:</strong> The subject of this request is extremely popular and his evenings are in high demand. Applicants must justify their claim to a Wednesday pub session in full. Incomplete forms will be used as a coaster. Form MK20 supersedes all previous WhatsApp-based meeting arrangements.
+    </div>
+
+    <!-- Section A: Applicant -->
+    <div class="section">
+      <div class="section-title">🧾 Section A — Who's Asking?</div>
+      <div class="field">
+        <label>Your Full Name (the one doing the requesting)</label>
+        <input type="text" placeholder="e.g. Your wonderful Ukrainian friend">
+      </div>
+      <div class="field">
+        <label>Your Nationality (for the record)</label>
+        <input type="text" placeholder="Ukrainian 🇺🇦 — obviously the best one">
+      </div>
+      <div class="field">
+        <label>In one sentence, why do YOU deserve this Wednesday?</label>
+        <textarea rows="2" placeholder="e.g. Because I am charming, good company, and I will bring the conversation energy."></textarea>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Section B: Time -->
+    <div class="section">
+      <div class="section-title">🕰️ Section B — Proposed Arrival Time (Wednesday)</div>
+      <div class="time-grid">
+        <div class="time-chip">
+          <input type="radio" name="time" id="t1">
+          <label for="t1"><span class="t-main">6:00pm</span><span class="t-vibe">Eager</span></label>
+        </div>
+        <div class="time-chip">
+          <input type="radio" name="time" id="t2">
+          <label for="t2"><span class="t-main">6:30pm</span><span class="t-vibe">Prompt</span></label>
+        </div>
+        <div class="time-chip">
+          <input type="radio" name="time" id="t3">
+          <label for="t3"><span class="t-main">7:00pm</span><span class="t-vibe">Civilised</span></label>
+        </div>
+        <div class="time-chip">
+          <input type="radio" name="time" id="t4">
+          <label for="t4"><span class="t-main">7:30pm</span><span class="t-vibe">Fashionably late</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Section C: Vibe -->
+    <div class="section">
+      <div class="section-title">✨ Section C — Pub Vibe Required</div>
+      <div class="chip-grid">
+        <div class="toggle-chip">
+          <input type="radio" name="vibe" id="v1">
+          <label for="v1"><span class="chip-icon">🪵</span> Cosy &amp; tucked away</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="radio" name="vibe" id="v2">
+          <label for="v2"><span class="chip-icon">🔥</span> Fireplace essential</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="radio" name="vibe" id="v3">
+          <label for="v3"><span class="chip-icon">📚</span> Quiet, talk-heavy</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="radio" name="vibe" id="v4">
+          <label for="v4"><span class="chip-icon">🎵</span> Bit of atmosphere</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="radio" name="vibe" id="v5">
+          <label for="v5"><span class="chip-icon">🍻</span> Lively, good energy</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="radio" name="vibe" id="v6">
+          <label for="v6"><span class="chip-icon">🌧️</span> Rainy window, moody</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Section D: Beverages -->
+    <div class="section">
+      <div class="section-title">🥂 Section D — Beverages (tick all intended)</div>
+      <div class="chip-grid">
+        <div class="toggle-chip">
+          <input type="checkbox" id="b1">
+          <label for="b1"><span class="chip-icon">🍺</span> Real ale / cask</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="checkbox" id="b2">
+          <label for="b2"><span class="chip-icon">🍷</span> A glass of wine</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="checkbox" id="b3">
+          <label for="b3"><span class="chip-icon">🫖</span> Herbal tea (no judgment)</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="checkbox" id="b4">
+          <label for="b4"><span class="chip-icon">🥃</span> Something stronger</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="checkbox" id="b5">
+          <label for="b5"><span class="chip-icon">🫧</span> Sparkling water, classy</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="checkbox" id="b6">
+          <label for="b6"><span class="chip-icon">🍹</span> Whatever looks good</label>
+        </div>
+      </div>
+      <div class="field" style="margin-top:0.8rem;">
+        <label>Any specific requests? (you're not at a Michelin restaurant but still)</label>
+        <input type="text" placeholder="e.g. Something warm, it's cold and I've had a day">
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Section E: Food -->
+    <div class="section">
+      <div class="section-title">🍽️ Section E — Food Situation</div>
+      <div class="food-note">Note: Ukrainian culinary standards will be mentally applied to all pub menu items. This is non-negotiable.</div>
+      <div class="chip-grid">
+        <div class="toggle-chip">
+          <input type="radio" name="food" id="f1">
+          <label for="f1"><span class="chip-icon">🍟</span> Pub chips, obviously</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="radio" name="food" id="f2">
+          <label for="f2"><span class="chip-icon">🥘</span> Proper pub meal</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="radio" name="food" id="f3">
+          <label for="f3"><span class="chip-icon">🫙</span> Just some bar snacks</label>
+        </div>
+        <div class="toggle-chip">
+          <input type="radio" name="food" id="f4">
+          <label for="f4"><span class="chip-icon">🫕</span> Pie. Just a pie.</label>
+        </div>
+      </div>
+      <div class="field" style="margin-top:0.9rem;">
+        <label>🌶️ Spice &amp; pepper preferences (Ukrainian standards noted)</label>
+        <input type="text" placeholder="e.g. More pepper than the British expect. Much more.">
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Section F: Discussion Topics -->
+    <div class="section">
+      <div class="section-title">💬 Section F — Proposed Discussion Topics</div>
+      <div class="topic-list">
+
+        <div class="topic-item">
+          <input type="checkbox" id="d1">
+          <label for="d1">
+            <span class="t-icon">💼</span>
+            Work, stress, and the general chaos of being a functioning adult
+            <span class="tick-box">✓</span>
+          </label>
+        </div>
+
+        <div class="topic-item">
+          <input type="checkbox" id="d2">
+          <label for="d2">
+            <span class="t-icon">❤️</span>
+            Relationships — the good, the complicated, and the inexplicable
+            <span class="tick-box">✓</span>
+          </label>
+        </div>
+
+        <div class="topic-item">
+          <input type="checkbox" id="d3">
+          <label for="d3">
+            <span class="t-icon">📝</span>
+            Dissertation woes (applicant may vent; Tom may advise professionally)
+            <span class="tick-box">✓</span>
+          </label>
+        </div>
+
+        <div class="topic-item">
+          <input type="checkbox" id="d4">
+          <label for="d4">
+            <span class="t-icon">🌍</span>
+            Geopolitics — the state of the world, none of it simple
+            <span class="tick-box">✓</span>
+          </label>
+        </div>
+
+        <div class="topic-item">
+          <input type="checkbox" id="d5">
+          <label for="d5">
+            <span class="t-icon">🚁</span>
+            Drone technology, innovation, and what Ukraine has taught the world
+            <span class="tick-box">✓</span>
+          </label>
+        </div>
+
+        <div class="topic-item">
+          <input type="checkbox" id="d6">
+          <label for="d6">
+            <span class="t-icon">🌶️</span>
+            Ukrainian food — peppers, spices, and why British seasoning is a crime
+            <span class="tick-box">✓</span>
+          </label>
+        </div>
+
+        <div class="topic-item">
+          <input type="checkbox" id="d7">
+          <label for="d7">
+            <span class="t-icon">☕</span>
+            Life plans, big dreams, and whether any of them are realistic
+            <span class="tick-box">✓</span>
+          </label>
+        </div>
+
+        <div class="topic-item">
+          <input type="checkbox" id="d8">
+          <label for="d8">
+            <span class="t-icon">🤔</span>
+            Something that's been on my mind that I haven't told anyone yet
+            <span class="tick-box">✓</span>
+          </label>
+        </div>
+
+        <div class="topic-item cheeky">
+          <input type="checkbox" id="d9">
+          <label for="d9">
+            <span class="t-icon">🌻</span>
+            The widely documented fact that Ukrainian women are the most beautiful in the world ✦ <em style="font-size:0.72rem;color:var(--ukraine-blue)">(official record, non-negotiable)</em>
+            <span class="tick-box">✓</span>
+          </label>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="divider" style="margin-top:1rem;"></div>
+
+    <!-- Declaration -->
+    <div class="declaration-box" style="margin-top:1rem;">
+      <strong>Applicant Declaration:</strong> I hereby confirm that I am excellent company, will not be on my phone the whole time, and understand that Tom's Wednesday evenings are a privilege and not a right. I acknowledge that the conversation will be better than most, the pub will be warm, and I will probably stay longer than planned. Which is fine. That's always fine.
+    </div>
+
+    <!-- Signature -->
+    <div class="sig-area">
+      <label>Applicant Signature (your name, a scribble, or a sunflower 🌻)</label>
+      <input type="text" class="sig-input" placeholder="Sign here...">
+      <div class="sig-sub">Submission constitutes agreement to arrive on time (ish) and bring good energy.</div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-zone">
+      <button class="btn-submit" onclick="submitForm()">📨 Submit Request to Outlook — Wednesday Awaits</button>
+      <button class="btn-reset" onclick="document.querySelectorAll('input[type=text], input[type=time], textarea').forEach(e=>e.value=''); document.querySelectorAll('input[type=radio], input[type=checkbox]').forEach(e=>e.checked=false);">Clear Form</button>
+    </div>
+
+    <!-- Footer -->
+    <div class="ua-strip"></div>
+    <div class="form-footer">
+      <span>Form MK20 🌻 Rev.1 (2025)</span>
+      <span>Bureau of Social Scheduling</span>
+    </div>
+  </div>
+
+  <!-- Success overlay -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-emoji">🍺</div>
+    <div class="success-title">Request Received!</div>
+    <div class="success-body">
+      Your application has been forwarded to the desk of T. Stacey for review.<br><br>
+      Please allow up to 0 minutes for approval. He was probably going to say yes anyway.<br><br>
+      <span style="color:var(--sunflower);">Wednesday. A cosy pub. Good conversation.</span><br>
+      That's all this ever needed to be. 🌻
+    </div>
+    <div class="success-ref">Form MK20 · Reference: WED-PUB-UA-001</div>
+    <button onclick="document.getElementById('successOverlay').classList.remove('show')" style="margin-top:2rem;background:transparent;border:1px solid rgba(240,192,32,0.3);color:var(--chalk-dim);font-family:'Courier Prime',monospace;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;padding:0.7rem 1.5rem;cursor:pointer;">← Back to Form</button>
+  </div>
+
+  <script>
+    function submitForm() {
+      // Check at least a time was selected
+      const time = document.querySelector('input[name="time"]:checked');
+      if (!time) {
+        alert('Please select a proposed time before submitting.');
+        return;
+      }
+      document.getElementById('successOverlay').classList.add('show');
+      window.scrollTo(0,0);
+    }
+  </script>
+
+</body>
+</html>
