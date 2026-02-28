@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form MZ61 – Extended Hug Request</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f5f0e8;
+      --dark: #1a1208;
+      --ink: #2c1f05;
+      --red: #b81c1c;
+      --stamp-green: #1a6b2a;
+      --border: #8b6f3a;
+      --faint: #d4c5a0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #c8b89a;
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(0,0,0,0.03) 10px,
+        rgba(0,0,0,0.03) 11px
+      );
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      font-family: 'Courier Prime', monospace;
+    }
+
+    .paper {
+      background: var(--cream);
+      max-width: 720px;
+      width: 100%;
+      padding: 3rem 3.5rem;
+      box-shadow: 4px 4px 0 #8b7355, 8px 8px 0 #6b5535, 0 0 40px rgba(0,0,0,0.3);
+      position: relative;
+      border: 1px solid var(--border);
+    }
+
+    .paper::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border: 1px solid var(--faint);
+      pointer-events: none;
+    }
+
+    /* Header */
+    .form-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      border-bottom: 3px double var(--ink);
+      padding-bottom: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-id {
+      font-size: 0.75rem;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    .form-id strong {
+      font-size: 1.4rem;
+      display: block;
+      letter-spacing: 2px;
+    }
+
+    .fox-emblem {
+      font-size: 3.5rem;
+      line-height: 1;
+      filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.2));
+    }
+
+    .form-title-block {
+      text-align: center;
+      flex: 1;
+      padding: 0 1rem;
+    }
+
+    .authority {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+
+    .form-title {
+      font-family: 'Special Elite', serif;
+      font-size: 1.4rem;
+      color: var(--dark);
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-subtitle {
+      font-size: 0.7rem;
+      color: #666;
+      margin-top: 0.3rem;
+      font-style: italic;
+    }
+
+    /* Watermark */
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-35deg);
+      font-family: 'Special Elite', serif;
+      font-size: 5rem;
+      color: rgba(184, 28, 28, 0.06);
+      white-space: nowrap;
+      pointer-events: none;
+      letter-spacing: 8px;
+      user-select: none;
+    }
+
+    /* Notice box */
+    .notice {
+      border: 1px solid var(--ink);
+      padding: 0.6rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.72rem;
+      background: rgba(0,0,0,0.03);
+      line-height: 1.5;
+    }
+
+    .notice strong { font-weight: 700; }
+
+    /* Sections */
+    .section {
+      margin-top: 1.5rem;
+    }
+
+    .section-title {
+      font-family: 'Special Elite', serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 0.25rem 0.6rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .field {
+      flex: 1;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #555;
+      margin-bottom: 0.2rem;
+    }
+
+    .field-line {
+      width: 100%;
+      border: none;
+      border-bottom: 1.5px solid var(--ink);
+      background: transparent;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.9rem;
+      padding: 0.2rem 0;
+      color: var(--dark);
+      outline: none;
+    }
+
+    .field-line:focus {
+      border-bottom-color: var(--red);
+    }
+
+    /* Checkbox grid */
+    .check-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--ink);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Duration selector */
+    .duration-options {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 0.4rem;
+    }
+
+    .duration-option {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .duration-option input[type="radio"] {
+      accent-color: var(--ink);
+      cursor: pointer;
+    }
+
+    /* Textarea */
+    .form-textarea {
+      width: 100%;
+      border: 1.5px solid var(--ink);
+      background: transparent;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      padding: 0.5rem;
+      resize: vertical;
+      min-height: 70px;
+      color: var(--dark);
+      outline: none;
+      margin-top: 0.4rem;
+    }
+
+    .form-textarea:focus {
+      border-color: var(--red);
+    }
+
+    /* Radiation section */
+    .radiation-section {
+      border: 2px solid var(--red);
+      padding: 1rem;
+      margin-top: 1.5rem;
+      position: relative;
+      background: rgba(184, 28, 28, 0.02);
+    }
+
+    .radiation-section .section-title {
+      background: var(--red);
+      margin-bottom: 0.8rem;
+    }
+
+    .radiation-badge {
+      position: absolute;
+      top: -14px;
+      right: 12px;
+      background: var(--cream);
+      padding: 0 6px;
+      font-size: 1.1rem;
+    }
+
+    .rad-result {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .rad-option {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .rad-option input[type="radio"] {
+      accent-color: var(--red);
+    }
+
+    .rad-readings {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 0.8rem;
+    }
+
+    .rad-field {
+      flex: 1;
+    }
+
+    .rad-field label {
+      display: block;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--red);
+      margin-bottom: 0.2rem;
+    }
+
+    .rad-field input {
+      width: 100%;
+      border: none;
+      border-bottom: 1.5px solid var(--red);
+      background: transparent;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.9rem;
+      padding: 0.2rem 0;
+      outline: none;
+    }
+
+    .clearance-text {
+      font-size: 0.7rem;
+      color: var(--red);
+      margin-top: 0.8rem;
+      font-style: italic;
+      border-top: 1px dashed var(--red);
+      padding-top: 0.5rem;
+    }
+
+    /* Signature area */
+    .sig-area {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 3px double var(--ink);
+    }
+
+    .sig-block {
+      flex: 1;
+    }
+
+    .sig-block label {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .sig-line {
+      width: 100%;
+      border: none;
+      border-bottom: 1.5px solid var(--ink);
+      background: transparent;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.9rem;
+      padding: 0.2rem 0;
+      outline: none;
+    }
+
+    .sig-subtext {
+      font-size: 0.6rem;
+      color: #888;
+      margin-top: 0.2rem;
+      font-style: italic;
+    }
+
+    /* Official stamp zone */
+    .stamp-zone {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: flex-end;
+      gap: 1.5rem;
+      align-items: flex-end;
+    }
+
+    .stamp-box {
+      width: 100px;
+      height: 100px;
+      border: 2px dashed var(--stamp-green);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--stamp-green);
+      text-align: center;
+      gap: 0.3rem;
+    }
+
+    .stamp-box .stamp-icon {
+      font-size: 2rem;
+    }
+
+    /* Footer */
+    .form-footer {
+      margin-top: 1.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--faint);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.6rem;
+      color: #999;
+      letter-spacing: 1px;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .paper { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="paper">
+
+    <div class="watermark">EXTENDED HUG</div>
+
+    <!-- Header -->
+    <div class="form-header">
+      <div class="form-id">
+        <strong>MZ61</strong>
+        Rev. 4 (2025)<br>
+        Office of Prolonged<br>Embrace Affairs
+      </div>
+
+      <div class="form-title-block">
+        <div class="authority">Official Documentation Bureau</div>
+        <div class="form-title">Extended Hug<br>Request Form</div>
+        <div class="form-subtitle">To be completed in full. No hug shall be initiated without prior approval.</div>
+      </div>
+
+      <div class="fox-emblem">🦊</div>
+    </div>
+
+    <!-- Notice -->
+    <div class="notice">
+      <strong>IMPORTANT:</strong> Unauthorised extended hugging is a serious matter. Applicants must complete ALL sections.
+      Form MZ61 supersedes all previous verbal hug agreements. Hugs of standard duration (≤3 seconds) do not require this form.
+      Cuddling on the sofa may require supplementary Form MZ61-B.
+    </div>
+
+    <!-- Section A -->
+    <div class="section">
+      <div class="section-title">Section A – Applicant Details</div>
+      <div class="field-row">
+        <div class="field">
+          <label>Full Name of Applicant</label>
+          <input type="text" class="field-line" placeholder="e.g. Tom">
+        </div>
+        <div class="field" style="max-width:140px">
+          <label>Date of Request</label>
+          <input type="date" class="field-line">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Relationship to Approving Officer</label>
+          <input type="text" class="field-line" placeholder="e.g. Deeply devoted friend">
+        </div>
+        <div class="field" style="max-width:160px">
+          <label>Time of Application</label>
+          <input type="time" class="field-line">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Previous Hugs Approved (last 7 days)</label>
+          <input type="number" class="field-line" min="0" placeholder="0">
+        </div>
+        <div class="field">
+          <label>Applicant's Current Emotional State</label>
+          <input type="text" class="field-line" placeholder="e.g. In desperate need of a squeeze">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section B -->
+    <div class="section">
+      <div class="section-title">Section B – Nature and Duration of Requested Hug</div>
+
+      <label style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1.5px;color:#555;">Requested Duration</label>
+      <div class="duration-options">
+        <label class="duration-option"><input type="radio" name="duration" value="3-10"> 3–10 seconds <em style="color:#888;font-size:0.75rem">(standard)</em></label>
+        <label class="duration-option"><input type="radio" name="duration" value="11-30"> 11–30 seconds</label>
+        <label class="duration-option"><input type="radio" name="duration" value="31-60"> 31–60 seconds</label>
+        <label class="duration-option"><input type="radio" name="duration" value="extended"> Extended (1 min+) 🏅</label>
+        <label class="duration-option"><input type="radio" name="duration" value="indefinite"> Indefinite / Until further notice</label>
+      </div>
+
+      <div style="margin-top:1rem;">
+        <label style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1.5px;color:#555;">Hug Type (tick all that apply)</label>
+        <div class="check-grid" style="margin-top:0.4rem;">
+          <label class="check-item"><input type="checkbox"> Standard front-facing embrace</label>
+          <label class="check-item"><input type="checkbox"> Side hug (casual, low commitment)</label>
+          <label class="check-item"><input type="checkbox"> Bear hug (full-body, high intensity)</label>
+          <label class="check-item"><input type="checkbox"> Lying-down hug with accompanying blanket</label>
+          <label class="check-item"><input type="checkbox"> Hug with simultaneous back-pat</label>
+          <label class="check-item"><input type="checkbox"> Hug that migrates into a cuddle</label>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem;">
+        <label style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1.5px;color:#555;">Grounds for Extended Hug Request (provide full justification)</label>
+        <textarea class="form-textarea" rows="3" placeholder="e.g. It is a cold evening and I have had a long day. Additionally, your jumper looks very soft and I am unable to resist."></textarea>
+      </div>
+    </div>
+
+    <!-- Section C -->
+    <div class="section">
+      <div class="section-title">Section C – Supporting Circumstances</div>
+      <label style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1.5px;color:#555;">Please confirm any of the following that apply:</label>
+      <div class="check-grid" style="margin-top:0.4rem;">
+        <label class="check-item"><input type="checkbox"> Applicant has recently been very good</label>
+        <label class="check-item"><input type="checkbox"> Weather is cold and hugs are thermally efficient</label>
+        <label class="check-item"><input type="checkbox"> Applicant has brought snacks or beverages</label>
+        <label class="check-item"><input type="checkbox"> At least one puppy was seen today</label>
+        <label class="check-item"><input type="checkbox"> Applicant smells particularly nice</label>
+        <label class="check-item"><input type="checkbox"> It's a special occasion (birthday, anniversary, Tuesday)</label>
+        <label class="check-item"><input type="checkbox"> The TV show is boring and a hug fills time usefully</label>
+        <label class="check-item"><input type="checkbox"> Applicant has already been rejected once today</label>
+      </div>
+    </div>
+
+    <!-- Radiation Section -->
+    <div class="radiation-section">
+      <div class="radiation-badge">☢️ ☢️ ☢️</div>
+      <div class="section-title">Section D – Mandatory Radiation Compliance Check</div>
+      <p style="font-size:0.75rem;margin-bottom:0.8rem;">
+        Pursuant to <em>The Closeness &amp; Proximity (Safety) Regulations, Clause 7</em>, all extended hug applicants must
+        undergo a standard radiation screening prior to physical contact. Results must be recorded below.
+        <strong>Approving Officer's safety is paramount.</strong>
+      </p>
+      <div class="rad-readings">
+        <div class="rad-field">
+          <label>Radiation Level (mSv)</label>
+          <input type="text" placeholder="e.g. 0.00 (nominal)">
+        </div>
+        <div class="rad-field">
+          <label>Screened By</label>
+          <input type="text" placeholder="e.g. The machine by the door">
+        </div>
+        <div class="rad-field">
+          <label>Time of Scan</label>
+          <input type="time">
+        </div>
+      </div>
+
+      <div style="margin-top:0.8rem;">
+        <label style="font-size:0.65rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--red);">Screening Outcome:</label>
+        <div class="rad-result" style="margin-top:0.4rem;">
+          <label class="rad-option"><input type="radio" name="rad" value="clear"> ✅ &nbsp;Radiation-free – cleared for hug</label>
+          <label class="rad-option"><input type="radio" name="rad" value="trace"> ⚠️ &nbsp;Trace levels – proceed with caution</label>
+          <label class="rad-option"><input type="radio" name="rad" value="hot"> ☢️ &nbsp;Too hot – hug deferred pending decontamination</label>
+        </div>
+      </div>
+
+      <div class="clearance-text">
+        Note: A reading of 0.00 mSv is standard and expected. Any glow is to be flagged immediately.
+        The Approving Officer accepts no liability for hugs given whilst applicant is emitting unusual levels of energy.
+      </div>
+    </div>
+
+    <!-- Signature area -->
+    <div class="sig-area">
+      <div class="sig-block">
+        <label>Applicant Signature</label>
+        <input type="text" class="sig-line" placeholder="Sign here (or draw a little heart)">
+        <div class="sig-subtext">I confirm the above information is true to the best of my knowledge and that I am hug-ready.</div>
+      </div>
+      <div class="sig-block">
+        <label>Approving Officer Signature</label>
+        <input type="text" class="sig-line" placeholder="MZ – Official Hug Authority">
+        <div class="sig-subtext">Approval does not guarantee hug of the requested duration. Officer reserves right to extend.</div>
+      </div>
+    </div>
+
+    <!-- Stamp -->
+    <div class="stamp-zone">
+      <div style="font-size:0.65rem;color:#999;max-width:200px;text-align:right;line-height:1.5;">
+        For official use only.<br>
+        Applications processed in order of snuggliness.
+      </div>
+      <div class="stamp-box">
+        <span class="stamp-icon">🟢</span>
+        <span>Approved</span>
+      </div>
+      <div class="stamp-box">
+        <span class="stamp-icon">🔴</span>
+        <span>Not Yet<br>Approved</span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="form-footer">
+      <span>Form MZ61 🦊 Rev.4 (2025)</span>
+      <span>Office of Prolonged Embrace Affairs</span>
+      <span>Page 1 of 1</span>
+    </div>
+
+  </div>
+
+</body>
+</html>
